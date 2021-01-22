@@ -10,11 +10,10 @@ public class Apes
     private static Semaphore releaseRope;
     private static Semaphore north;
     private static Semaphore south;
-    private const int waitTime = 50;
+    private const int waitTime = 5;
     private const int maxRopeCount = 5;
-    private const int apeCount = 500;
-    private static int northApesOnRope = 0;
-    private static int southApesOnRope = 0;
+    private const int apeCount = 5000;
+    private static int apesOnRope = 0;
 
     public static void Main()
     {
@@ -55,11 +54,11 @@ public class Apes
     {
         separation.WaitOne();
         south.WaitOne();
-        if (southApesOnRope == 0)
+        if (apesOnRope == 0)
         {
             north.WaitOne();
         }
-        southApesOnRope++;
+        apesOnRope++;
         separation.Release();
 
         rope.WaitOne();
@@ -73,8 +72,8 @@ public class Apes
         {
             releaseRope.WaitOne();
             rope.Release();
-            southApesOnRope--;
-            if (southApesOnRope == 0)
+            apesOnRope--;
+            if (apesOnRope == 0)
             {
                 Console.WriteLine();
                 Console.WriteLine("-----");
@@ -88,11 +87,11 @@ public class Apes
     {
         separation.WaitOne();
         north.WaitOne();
-        if (northApesOnRope == 0)
+        if (apesOnRope == 0)
         {
             south.WaitOne();
         }
-        northApesOnRope++;
+        apesOnRope++;
         separation.Release();
 
         rope.WaitOne();
@@ -106,8 +105,8 @@ public class Apes
         {
             releaseRope.WaitOne();
             rope.Release();
-            northApesOnRope--;
-            if (northApesOnRope == 0)
+            apesOnRope--;
+            if (apesOnRope == 0)
             {
                 Console.WriteLine();
                 Console.WriteLine("-----");
