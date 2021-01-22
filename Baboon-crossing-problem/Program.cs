@@ -52,14 +52,7 @@ public class Apes
     }
     public static void goNorth()
     {
-        separation.WaitOne();
-        south.WaitOne();
-        if (apesOnRope == 0)
-        {
-            north.WaitOne();
-        }
-        apesOnRope++;
-        separation.Release();
+        QueueRope(south, north);
 
         rope.WaitOne();
         try
@@ -85,14 +78,7 @@ public class Apes
     }
     public static void goSouth()
     {
-        separation.WaitOne();
-        north.WaitOne();
-        if (apesOnRope == 0)
-        {
-            south.WaitOne();
-        }
-        apesOnRope++;
-        separation.Release();
+        QueueRope(north,south);
 
         rope.WaitOne();
         try
@@ -116,4 +102,18 @@ public class Apes
         }
         return;
     }
+    private static void QueueRope(Semaphore myGate, Semaphore closeGate)
+    {
+        separation.WaitOne();
+        myGate.WaitOne();
+        if (apesOnRope == 0)
+        {
+            closeGate.WaitOne();
+        }
+        apesOnRope++;
+        separation.Release();
+        return;
+    }
+    
+    
 }
