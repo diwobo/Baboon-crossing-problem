@@ -10,32 +10,33 @@ public class Apes
     private static Semaphore releaseRope;
     private static Semaphore north;
     private static Semaphore south;
-    private const int waitTime = 10;
-    private const int maxRopeCount = 5;
-    private const int apeCount = 5000;
-    private static int apesOnRope = 0;
+    private const  int waitTime     =  10;
+    private const  int maxRopeCount =   5;
+    private const  int apeCount     = 100;
+    private static int apesOnRope   =   0;
 
     public static void Main()
     {
-        rope = new Semaphore(maxRopeCount, maxRopeCount);
-        separation = new Semaphore(0, 1);
+        rope        = new Semaphore(maxRopeCount, maxRopeCount);
+        separation  = new Semaphore(0, 1);
         releaseRope = new Semaphore(1, 1);
-        north = new Semaphore(1, 1);
-        south = new Semaphore(1, 1);
-        apes = new Task[apeCount];
+        north       = new Semaphore(1, 1);
+        south       = new Semaphore(1, 1);
+        apes        = new Task[apeCount];
 
-        apeGenerator();
+        ApeGenerator();
         Thread.Sleep(1000);
 
         Console.WriteLine(": Start :");
         Console.WriteLine("-----");
+
         separation.Release(1);
         Task.WaitAll(apes);
 
         Console.WriteLine(": End :");
         Console.ReadKey();
     }
-    public static void apeGenerator()
+    public static void ApeGenerator()
     {
         Random rnd = new Random();
         for (int i = 0; i < apeCount; i++)
@@ -43,17 +44,17 @@ public class Apes
             apes[i] = Task.Run(() =>
             {
                 if (rnd.Next(0, 2) == 0)
-                    goNorth();
+                    GoNorth();
                 else
-                    goSouth();
+                    GoSouth();
             });
         }
         return;
     }
-    public static void goNorth()
+    public static void GoNorth()
     {
         QueueRope(south, north);
-
+ 
         rope.WaitOne();
         try
         {
@@ -65,7 +66,7 @@ public class Apes
         }
         return;
     }
-    public static void goSouth()
+    public static void GoSouth()
     {
         QueueRope(north, south);
 
@@ -80,10 +81,10 @@ public class Apes
         }
         return;
     }
-    private static void QueueRope(Semaphore myGate, Semaphore closeGate)
+    private static void QueueRope(Semaphore startGate, Semaphore closeGate)
     {
         separation.WaitOne();
-        myGate.WaitOne();
+        startGate.WaitOne();
         if (apesOnRope == 0)
         {
             closeGate.WaitOne();
@@ -92,14 +93,12 @@ public class Apes
         separation.Release();
         return;
     }
-
     private static void EnterRope(Semaphore start, string direction)
     {
         Console.Write(direction);
         start.Release();
         Thread.Sleep(waitTime);
     }
-
     private static void ReleaseRope(Semaphore releaseGate)
     {
         releaseRope.WaitOne();
