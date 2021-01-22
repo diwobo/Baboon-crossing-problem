@@ -10,7 +10,7 @@ public class Apes
     private static Semaphore releaseRope;
     private static Semaphore north;
     private static Semaphore south;
-    private const int waitTime = 5;
+    private const int waitTime = 10;
     private const int maxRopeCount = 5;
     private const int apeCount = 5000;
     private static int apesOnRope = 0;
@@ -57,48 +57,26 @@ public class Apes
         rope.WaitOne();
         try
         {
-            Console.Write("S");
-            south.Release();
-            Thread.Sleep(waitTime);
+            EnterRope(south, "N");
         }
         finally
         {
-            releaseRope.WaitOne();
-            rope.Release();
-            apesOnRope--;
-            if (apesOnRope == 0)
-            {
-                Console.WriteLine();
-                Console.WriteLine("-----");
-                north.Release();
-            }
-            releaseRope.Release();
+            ReleaseRope(north);
         }
         return;
     }
     public static void goSouth()
     {
-        QueueRope(north,south);
+        QueueRope(north, south);
 
         rope.WaitOne();
         try
         {
-            Console.Write("N");
-            north.Release();
-            Thread.Sleep(waitTime);
+            EnterRope(north, "S");
         }
         finally
         {
-            releaseRope.WaitOne();
-            rope.Release();
-            apesOnRope--;
-            if (apesOnRope == 0)
-            {
-                Console.WriteLine();
-                Console.WriteLine("-----");
-                south.Release();
-            }
-            releaseRope.Release();
+            ReleaseRope(south);
         }
         return;
     }
@@ -114,6 +92,25 @@ public class Apes
         separation.Release();
         return;
     }
-    
-    
+
+    private static void EnterRope(Semaphore start, string direction)
+    {
+        Console.Write(direction);
+        start.Release();
+        Thread.Sleep(waitTime);
+    }
+
+    private static void ReleaseRope(Semaphore releaseGate)
+    {
+        releaseRope.WaitOne();
+        rope.Release();
+        apesOnRope--;
+        if (apesOnRope == 0)
+        {
+            Console.WriteLine();
+            Console.WriteLine("-----");
+            releaseGate.Release();
+        }
+        releaseRope.Release();
+    }
 }
