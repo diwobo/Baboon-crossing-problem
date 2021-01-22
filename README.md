@@ -15,7 +15,9 @@ Assuming that we can teach the baboons to use semaphores, we would like
 to design a synchronization scheme with the following properties:
 
 • Once a baboon has begun to cross, it is guaranteed to get to the otherv side without running into a baboon going the other way.
+
 • There are never more than 5 baboons on the rope.
+
 • A continuing stream of baboons crossing in one direction should not bar baboons going the other way indefinitely (no starvation).
 
 This book is available under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
