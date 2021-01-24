@@ -43,7 +43,7 @@ public class Apes
         {
             apes[i] = Task.Run(() =>
             {
-                if (rnd.Next(0, 2) == 0)
+                if (rnd.Next(2) == 0)
                     GoNorth();
                 else
                     GoSouth();
