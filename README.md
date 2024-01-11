@@ -14,7 +14,7 @@ more baboons on the rope at the same time, it will break.
 Assuming that we can teach the baboons to use semaphores, we would like
 to design a synchronization scheme with the following properties:
 
-• Once a baboon has begun to cross, it is guaranteed to get to the otherv side without running into a baboon going the other way.
+• Once a baboon has begun to cross, it is guaranteed to get to the other side without running into a baboon going the other way.
 
 • There are never more than 5 baboons on the rope.
 
